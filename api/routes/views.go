@@ -16,6 +16,11 @@ func Login(c echo.Context) error {
 
 	username, password := c.FormValue("username"), c.FormValue("password")
 
+	if username != "julian" && password != "123" {
+		c.Response().Header().Add("HX-Retarget", ".errors")
+		return c.String(200, "This is an error")
+	}
+
 	fmt.Println(username, password)
 	// peform login agains database
 

@@ -4,7 +4,7 @@ templ Index() {
   @Layout() {
     <h1>this is a node</h1>
     <div>
-      <form action="/login" method="POST" hx-boost="true">
+      <form hx-post="/login" hx-trigger="submit">
         <div class="input-group">
           <label for="username">Username</label>
           <input id="username" type="text" name="username" />
@@ -13,6 +13,9 @@ templ Index() {
         <div class="input-group">
           <label for="password">password</label>
           <input id="password" type="password" name="password" />
+        </div>
+        <div class="errors" hx-swap="innerHTML">
+
         </div>
 
         <button type="submit">Login</button>
