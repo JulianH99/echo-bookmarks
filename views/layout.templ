@@ -4,13 +4,14 @@ templ Head() {
 	<head>
 		<meta charset="UTF-8"/>
 		<title>go bookmarks</title>
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css"/>
 	</head>
 }
 
 templ Header() {
-	<header>
+	<header class="box">
 		<nav>
-			<h1>Bookmark manager</h1>
+			<h1 class="title">Bookmark manager</h1>
 		</nav>
 	</header>
 }
@@ -21,7 +22,7 @@ templ Layout() {
 		@Head()
 		<body>
 			@Header()
-			<main>
+			<main class="container">
 				{ children... }
 			</main>
 			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
