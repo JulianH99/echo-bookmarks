@@ -30,8 +30,10 @@ func NewApp(appConfig AppConfig) {
 func setupRoutes(app *echo.Echo) {
 	// setup main routes
 	app.GET("/", routes.Index)
+	app.GET("/register", routes.Register)
 
 	app.POST("/login", routes.Login)
+	app.POST("/register", routes.Register)
 
 	// setup bookmark routes
 	app.GET("/bookmarks", routes.GetBookmarks)

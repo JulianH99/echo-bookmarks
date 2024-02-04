@@ -1,0 +1,19 @@
+package views
+
+templ Register() {
+  @Layout() {
+    <h1>Register</h1>
+    <form hx-post="/register" hx-trigger="submit">
+      <div class="input-group">
+        <label for="username">Username</label>
+        <input id="username" type="text" name="username"/>
+      </div>
+      <div class="input-group">
+        <label for="password">password</label>
+        <input id="password" type="password" name="password"/>
+      </div>
+      <div class="errors" hx-swap="innerHTML"></div>
+      <button type="submit">Register</button>
+    </form>
+  }
+}

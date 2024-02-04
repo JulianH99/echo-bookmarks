@@ -12,4 +12,5 @@ type Bookmark struct {
 	Title       string
 	Description sql.NullString
 	CreatedAt   time.Time
+	UserID      uint
 }

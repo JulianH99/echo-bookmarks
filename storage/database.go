@@ -34,6 +34,8 @@ func StartDb(dbconfig DbConfig) error {
 	database = db
 
 	database.AutoMigrate(&models.Bookmark{})
+	database.AutoMigrate(&models.User{})
+	database.AutoMigrate(&models.Session{})
 
 	return nil
 
