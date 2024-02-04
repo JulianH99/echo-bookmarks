@@ -18,16 +18,32 @@ func Login(c echo.Context) error {
 
 	username, password := c.FormValue("username"), c.FormValue("password")
 
-	if username != "julian" && password != "123" {
+	db := storage.Database()
+	var user models.User
+
+	tx := db.Where("nick = ?", username).First(&user)
+
+	if tx.RowsAffected == 0 {
 		c.Response().Header().Add("HX-Retarget", ".errors")
-		return c.String(200, "This is an error")
+		return c.String(200, "Invalid username or password")
 	}
 
-	fmt.Println(username, password)
-	// peform login agains database
+	if help.CheckPassword(password, user.Password) {
+		// generate session token
+		sessionToken := help.GenerateSessionToken(user)
 
-	c.Response().Header().Add("HX-Location", "/bookmarks")
-	return c.JSON(200, map[string]any{"message": "logged in"})
+		help.SaveSession("user-token", sessionToken, c)
+
+		// maybe move all dbs operations to model files
+		help.SaveDbSession(user.Id, sessionToken)
+
+		c.Response().Header().Add("HX-Location", "/bookmarks")
+		return c.JSON(200, map[string]any{"message": "logged in"})
+	}
+
+	c.Response().Header().Add("HX-Retarget", ".errors")
+	return c.String(200, "Invalid username or password")
+
 }
 
 func Register(c echo.Context) error {
@@ -55,7 +71,7 @@ func Register(c echo.Context) error {
 	}
 	db.Create(&user)
 
-	c.Response().Header().Add("HX-Location", "/bookmarks")
+	c.Response().Header().Add("HX-Location", "/")
 	return c.JSON(200, map[string]any{"message": "registered"})
 
 }
