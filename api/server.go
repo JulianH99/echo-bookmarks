@@ -23,6 +23,8 @@ func setupRoutes(app *echo.Echo) {
 	// setup main routes
 	app.GET("/", routes.Index)
 
+	app.POST("/login", routes.Login)
+
 	// setup bookmark routes
 	app.GET("/bookmarks", routes.GetBookmarks)
 

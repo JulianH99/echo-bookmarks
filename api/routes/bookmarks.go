@@ -1,9 +1,13 @@
 package routes
 
-import "github.com/labstack/echo/v4"
+import (
+	"github.com/JulianH99/gomarks/help"
+	bookmarks "github.com/JulianH99/gomarks/views/bookmarks"
+	"github.com/labstack/echo/v4"
+)
 
 func GetBookmarks(c echo.Context) error {
 
-	return c.JSON(200, map[string]any{"message": "working from inside"})
+	return help.Render(c, bookmarks.Index())
 
 }

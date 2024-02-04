@@ -1,0 +1,30 @@
+package views
+
+templ Head() {
+	<head>
+		<meta charset="UTF-8"/>
+		<title>go bookmarks</title>
+	</head>
+}
+
+templ Header() {
+	<header>
+		<nav>
+			<h1>Bookmark manager</h1>
+		</nav>
+	</header>
+}
+
+templ Layout() {
+	<!DOCTYPE html>
+	<html lang="en">
+		@Head()
+		<body>
+			@Header()
+			<main>
+				{ children... }
+			</main>
+			<script src="https://unpkg.com/htmx.org@1.9.10"></script>
+		</body>
+	</html>
+}
