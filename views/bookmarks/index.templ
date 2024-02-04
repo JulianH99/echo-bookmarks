@@ -1,9 +1,44 @@
 package bookmarks
 
-import "github.com/JulianH99/gomarks/views"
+import (
+  "strconv"
+	"github.com/JulianH99/gomarks/views"
+	"github.com/JulianH99/gomarks/storage/models"
+)
 
-templ Index() {
+templ BookmarkList(bookmarks []models.Bookmark) {
+	<ul id="bookmarks-list">
+		for _, item := range bookmarks {
+			<li>
+				<a href={ templ.URL(item.WebsiteUrl) }>
+					<article class="bookmark-item">
+						<img src={ item.MediaUrl.String } alt={ item.Title }/>
+						<h1>{ item.Title }</h1>
+						<p>{ item.Description.String }</p>
+					</article>
+				</a>
+				<button hx-delete={ "/bookmarks/" + strconv.FormatUint(uint64(item.Id), 10) } 
+            hx-trigger="click" 
+            hx-target="#bookmarks-list"
+            hx-swap="outerHTML">
+					Delete
+				</button>
+			</li>
+		}
+	</ul>
+}
+
+templ Index(bookmarks []models.Bookmark) {
 	@views.Layout() {
 		<h1>bookmarks</h1>
+		@BookmarkList(bookmarks)
+		<form hx-post="/bookmarks/add" hx-trigger="submit" hx-target=".results" hx-swap="innerHTML">
+			<div class="input-group">
+				<label for="url">Url</label>
+				<input id="url" type="url" name="url"/>
+			</div>
+			<div class="results"></div>
+			<button>Add new bookmark</button>
+		</form>
 	}
 }

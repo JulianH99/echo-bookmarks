@@ -1,0 +1,15 @@
+version: "3.1"
+
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_DB: bookmarks
+      POSTGRES_USER: bookmarks
+      POSTGRES_PASSWORD: bookmarks
+      POSTGRES_ROOT_PASSWORD: bookmarks
+    ports:
+      - 5432:5432
+    volumes:
+      - .db:/var/lib/postgresql/data
+    restart: always
