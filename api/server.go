@@ -23,13 +23,10 @@ func authMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 		userToken := help.GetSession("user-token", c)
 
 		if userToken != "" {
-
 			fmt.Println("User token is ", userToken)
-
 		}
 
 		return nil
-
 	}
 
 }
@@ -37,9 +34,9 @@ func authMiddleware(next echo.HandlerFunc) echo.HandlerFunc {
 func NewApp(appConfig AppConfig) {
 	app := echo.New()
 	app.Use(session.Middleware(sessions.NewCookieStore([]byte("secret"))))
-	app.Use(authMiddleware)
 
-	setupRoutes(app)
+	setupAuthRoutes(app)
+	setupBookmarksRoutes(app)
 
 	err := storage.StartDb(appConfig.DbConfig)
 
@@ -50,17 +47,22 @@ func NewApp(appConfig AppConfig) {
 	app.Logger.Fatal(app.Start(":" + strconv.Itoa(appConfig.Port)))
 }
 
-func setupRoutes(app *echo.Echo) {
-	// setup main routes
+func setupAuthRoutes(app *echo.Echo) {
+
 	app.GET("/", routes.Index)
 	app.GET("/register", routes.Register)
 
 	app.POST("/login", routes.Login)
 	app.POST("/register", routes.Register)
+}
 
+func setupBookmarksRoutes(app *echo.Echo) {
 	// setup bookmark routes
-	app.GET("/bookmarks", routes.GetBookmarks)
-	app.POST("bookmarks/add", routes.AddNewBookmark)
-	app.DELETE("/bookmarks/:id", routes.DeleteBookmark)
+	g := app.Group("/bookmarks")
+	g.Use(authMiddleware)
+
+	g.GET("/", routes.GetBookmarks)
+	g.POST("/add", routes.AddNewBookmark)
+	g.DELETE("/:id", routes.DeleteBookmark)
 
 }
