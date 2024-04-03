@@ -1,8 +1,7 @@
 package routes
 
 import (
-	"fmt"
-
+	"github.com/JulianH99/gomarks/api/apicontext"
 	"github.com/JulianH99/gomarks/help"
 	"github.com/JulianH99/gomarks/storage"
 	"github.com/JulianH99/gomarks/storage/models"
@@ -47,7 +46,6 @@ func Login(c echo.Context) error {
 }
 
 func Register(c echo.Context) error {
-	fmt.Println("this is it")
 	if c.Request().Method == "GET" {
 		return help.Render(c, views.Register())
 	}
@@ -73,5 +71,17 @@ func Register(c echo.Context) error {
 
 	c.Response().Header().Add("HX-Location", "/")
 	return c.JSON(200, map[string]any{"message": "registered"})
+
+}
+
+func Logout(c echo.Context) error {
+
+	appContext := c.(*apicontext.Context)
+
+	help.RemoveSession(appContext.User.Id, c)
+
+	c.Response().Header().Add("HX-Location", "/")
+
+	return help.Render(c, views.MenuLinks())
 
 }

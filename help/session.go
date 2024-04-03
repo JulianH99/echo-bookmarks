@@ -1,6 +1,8 @@
 package help
 
 import (
+	"context"
+
 	"github.com/JulianH99/gomarks/storage"
 	"github.com/JulianH99/gomarks/storage/models"
 	"github.com/gorilla/sessions"
@@ -37,9 +39,7 @@ func SaveDbSession(userId uint, token string) {
 
 	var session *models.Session
 
-	db.Where("user_id = ? ", userId).First(&session)
-
-	if session != nil {
+	if db.Where("user_id = ? ", userId).First(&session).RowsAffected > 0 {
 		session.Token = token
 
 		db.Save(&session)
@@ -52,4 +52,25 @@ func SaveDbSession(userId uint, token string) {
 
 		db.Create(&session)
 	}
+}
+
+func RemoveSession(userId uint, c echo.Context) {
+
+	db := storage.Database()
+
+	var sess *models.Session
+
+	db.Where("user_id = ?", userId).First(&sess)
+
+	if sess != nil {
+		db.Delete(&sess, sess.UserId)
+	}
+
+	// remove session from cookies
+	echoSess, _ := session.Get("echo-session", c)
+	echoSess.Values["user-token"] = nil
+	echoSess.Save(c.Request(), c.Response())
+
+	// remove from Context
+	c.SetRequest(c.Request().WithContext(context.WithValue(c.Request().Context(), "userToken", nil)))
 }

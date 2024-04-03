@@ -4,7 +4,6 @@ import (
 	"crypto/aes"
 	"crypto/cipher"
 	"encoding/base64"
-	"fmt"
 
 	"github.com/JulianH99/gomarks/storage/models"
 )
@@ -21,7 +20,6 @@ func encrypt(str, secret string) string {
 	block, err := aes.NewCipher([]byte(secret))
 
 	if err != nil {
-		fmt.Println("this is the block %i", err.Error())
 		return ""
 	}
 

@@ -3,6 +3,7 @@ package routes
 import (
 	"database/sql"
 
+	"github.com/JulianH99/gomarks/api/apicontext"
 	"github.com/JulianH99/gomarks/api/services"
 	"github.com/JulianH99/gomarks/help"
 	"github.com/JulianH99/gomarks/storage"
@@ -14,9 +15,11 @@ import (
 func GetBookmarks(c echo.Context) error {
 	db := storage.Database()
 
+	apiContext := c.(*apicontext.Context)
+
 	var bookmarks []models.Bookmark
 
-	db.Find(&bookmarks)
+	db.Where("user_id = ?", apiContext.User.Id).Find(&bookmarks)
 
 	return help.Render(c, views.Index(bookmarks))
 }
@@ -24,6 +27,8 @@ func GetBookmarks(c echo.Context) error {
 func AddNewBookmark(c echo.Context) error {
 
 	url := c.FormValue("url")
+	apiContext := c.(*apicontext.Context)
+	userId := apiContext.User.Id
 
 	// need to validate url later
 	meta, err := services.GetMetadataFromUrl(url)
@@ -38,6 +43,7 @@ func AddNewBookmark(c echo.Context) error {
 		Description: sql.NullString{String: meta.Description, Valid: true},
 		WebsiteUrl:  url,
 		MediaUrl:    sql.NullString{String: meta.Image, Valid: true},
+		UserID:      userId,
 	}
 
 	db.Create(&bookmark)
@@ -46,7 +52,7 @@ func AddNewBookmark(c echo.Context) error {
 
 	var bookmarks []models.Bookmark
 
-	db.Find(&bookmarks)
+	db.Where("user_id = ?", userId).Find(&bookmarks)
 
 	c.Response().Header().Add("HX-Retarget", "#bookmarks-list")
 	c.Response().Header().Add("HX-Reswap", "outerHTML")

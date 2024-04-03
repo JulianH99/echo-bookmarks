@@ -8,17 +8,30 @@ templ Head() {
 	</head>
 }
 
+templ MenuLinks() {
+	if ctx.Value("userToken") != nil {
+		<a
+			hx-post="/logout"
+			class="navbar-item"
+			hx-target=".navbar-end"
+			hx-swap="innerHTML"
+		>Logout</a>
+	} else {
+		<a class="navbar-item" href="/">
+			Login
+		</a>
+		<a class="navbar-item" href="/register">
+			Register
+		</a>
+	}
+}
+
 templ Header() {
 	<header class="box">
 		<nav>
 			<h1 class="title">Bookmark manager</h1>
 			<div class="navbar-end">
-				<a class="navbar-item" href="/">
-					Login
-				</a>
-				<a class="navbar-item" href="/register">
-					Register
-				</a>
+				@MenuLinks()
 			</div>
 		</nav>
 	</header>
